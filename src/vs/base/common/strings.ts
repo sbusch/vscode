@@ -935,6 +935,14 @@ export function containsUppercaseCharacter(target: string, ignoreEscapedChars = 
 	return target.toLowerCase() !== target;
 }
 
+export function containsCharactersDifferentInUpperAndLowercase(target: string): boolean {
+	if (!target) {
+		return false;
+	}
+
+	return target.toLowerCase() !== target.toUpperCase();
+}
+
 export function uppercaseFirstLetter(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }

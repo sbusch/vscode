@@ -18,12 +18,14 @@ export class SearchParams {
 	public readonly isRegex: boolean;
 	public readonly matchCase: boolean;
 	public readonly wordSeparators: string | null;
+	public readonly smartCase: boolean;
 
-	constructor(searchString: string, isRegex: boolean, matchCase: boolean, wordSeparators: string | null) {
+	constructor(searchString: string, isRegex: boolean, matchCase: boolean, wordSeparators: string | null, smartCase: boolean) {
 		this.searchString = searchString;
 		this.isRegex = isRegex;
 		this.matchCase = matchCase;
 		this.wordSeparators = wordSeparators;
+		this.smartCase = smartCase;
 	}
 
 	public parseSearchRequest(): SearchData | null {
@@ -57,10 +59,12 @@ export class SearchParams {
 		}
 
 		let canUseSimpleSearch = (!this.isRegex && !multiline);
-		if (canUseSimpleSearch && this.searchString.toLowerCase() !== this.searchString.toUpperCase()) {
+		if (canUseSimpleSearch && strings.containsCharactersDifferentInUpperAndLowercase(this.searchString)) {
 			// casing might make a difference
 			canUseSimpleSearch = this.matchCase;
 		}
+
+		console.log('smartcase', this.configurationService.getValue<ISearchConfigurationProperties>('search').smartCase);
 
 		return new SearchData(regex, this.wordSeparators ? getMapForWordSeparators(this.wordSeparators) : null, canUseSimpleSearch ? this.searchString : null);
 	}
